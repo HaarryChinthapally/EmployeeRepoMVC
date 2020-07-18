@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Index"; 
+}
+
+<h2>Welcome To Hari</h2>
+
+@*@Html.ActionLink("Employee","Index")*@
+
+<button id="btnHome" name="home">GoToEmployee</button>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnHome").click(function () {
+            var url = '@Url.Action("Index", "Employee")';
+            window.location.href = url;
+        });
+    });
+</script>

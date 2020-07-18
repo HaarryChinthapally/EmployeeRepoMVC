@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Welcome To Lakshmi</h2>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+<link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+<script src="~/Scripts/i18n/grid.locale-en.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.4/jquery.jqgrid.min.js"></script>
+@*<script src="~/Scripts/jquery.jqGrid.min.js"></script>*@
+
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.4/css/ui.jqgrid.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.4/jquery.jqgrid.min.js"></script>*@
+<input type="button" name="create" id="btnCreate" value="Add Employee"/>
+
+<div>
+    <table id="grid"></table>
+    <div id="pager"></div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        //$("a.imageicon").click(function (event) {
+        //    e.stopImmediatePropagation();
+        //    e.preventDefault();
+        //    e.stopPropagation();
+
+        //});
+        $("a.imageicon").bind("click", function (event) {
+            // Unbind the click event from anchors with class button
+            $(this).unbind(event);
+             e.stopImmediatePropagation();
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+
+        //GetEmployees();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/Employee/GetEmployees",
+            //data: JSON.stringify({ json: JSON.stringify(tblemployee) }),
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data != 'Fail') {
+                    GetEmployees(data.total);
+                    //sessionStorage.setItem("EmpID", data.EmployeeID);
+                    // SaveEmptyAffordable();
+                }
+                else {
+
+                }
+            },
+        });
+
+        $("#btnCreate").click(function () {
+            window.location.href = "/Employee/Create";
+        });
+    });
+
+    function GetEmployees(data1) {
+        debugger;
+        "use strict";
+        $("#grid").jqGrid({
+            colNames: [
+                "Edit ", "Delete", "eId", "fName", "lName", "add1", "add2", "eId"
+            ],
+            data: data1,
+            colModel: [
+                { name: 'edit', search: false, width: 30, sortable: false, keys: false, formatter: editLink },
+                { name: 'delete', search: false, width: 35, sortable: false, formatter: deleteLink },
+                { name: "EmployeeId", index: 'id', width: 75 },
+                { name: "FirstName", index: 'FName', width: 70, editable: true },
+                { name: "LastName", index: 'LName', width: 70, editable: true },
+                { name: "Address1", index: 'Add1', width: 80, editable: true },
+                { name: "Address2", index: 'Add2', width: 80, editable: true },
+                { name: "EmailID", index: 'EID', width: 160, editable: true }]
+        });
+    };
+
+
+    function editLink(cellValue, options, rowdata, action) {
+        debugger;
+        return "<a href='/Employee/Edit?id=" + rowdata.EmployeeId + "' class='ui-icon ui-icon-pencil imageicon' ></a>";
+    }
+    function EditRecord(e, id) {
+        debugger;
+        e.stopImmediatePropagation();
+        //var tblemployee = { EmployeeId: id };
+        //var employee = new Object();
+        //employee.EmployeeId = id;
+        window.location.href = "/Employee/Edit?id=" + id;
+        return;
+        //debugger;
+        //  $.ajax({
+        //    type: "POST",
+        //    contentType: "application/json; charset=utf-8",
+        //    url: "/Employee/Edit",
+        //    data: JSON.stringify(employee),
+        //    dataType: "json",
+        //    success: function (data) {
+        //        debugger;
+        //        if (data != 'Fail') {
+        //            //GetEmployees(data.total);
+        //            //sessionStorage.setItem("EmpID", data.EmployeeID);
+        //            // SaveEmptyAffordable();
+        //        }
+        //        else {
+
+        //        }
+        //      },
+        //      error: function (e) {
+        //          debugger;
+        //      }
+        //});
+    }
+    function deleteLink(cellValue, options, rowdata, action) {
+        return "<a href='javascript:deleteRecord(" + rowdata.EmployeeId + ")' class='ui-icon ui-icon-closethick'></a>";
+    }
+    function deleteRecord(id) {
+        var result = confirm("Are you sure you Want to delete?");
+        if (result == true) {
+            window.location.href = "/Employee/Delete?id=" + id;
+        }
+    }
+</script>
+
+
